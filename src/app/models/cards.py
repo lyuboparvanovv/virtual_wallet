@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from app.db.base import Base
-from app.enums import CardType
+from src.app.db.base import Base
+from src.app.enums import CardType
 
 
 class Card(Base):
