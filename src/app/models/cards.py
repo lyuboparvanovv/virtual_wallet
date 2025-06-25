@@ -1,12 +1,14 @@
-from sqlalchemy import Column, Integer, String
-from src.app.db.base import Base
+
+from sqlalchemy import Column, Integer, String, UUID
+
+from app.db.session import Base
 from src.app.enums import CardType
 
 
 class Card(Base):
     __tablename__ = "cards"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     card_number = Column(String(20), nullable=False)
     exp_date = Column(String(20), nullable=False)
     card_holder = Column(String(30), nullable=False)
