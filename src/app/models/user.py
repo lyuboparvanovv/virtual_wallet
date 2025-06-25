@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from src.app.db.base import Base
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, UUID
+
+from app.db.session import Base
 
 
 class User(Base):
 
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String(100), unique=True, nullable=False)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
