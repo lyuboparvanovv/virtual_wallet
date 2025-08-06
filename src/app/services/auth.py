@@ -1,11 +1,14 @@
+import os
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from app import crud, models
-from dotenv import load_dotenv
-import os
+
+from app.crud.user import get_user_by_username
+from app.models.user import User
+
 load_dotenv()
 from app.db.session import get_db
 
@@ -16,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=15))
+    expire = datetime.now() + (expires_delta if expires_delta else timedelta(minutes=15))
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -31,24 +34,24 @@ def verify_access_token(token: str, credentials_exception):
     except JWTError:
         raise credentials_exception
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> models.User:
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     username = verify_access_token(token, credentials_exception)
-    user = crud.get_user_by_username(db, username=username)
+    user = get_user_by_username(db, username=username)
     if user is None or not user.is_active or not user.is_approved:
         raise credentials_exception
     return user
 
-def get_current_active_user(current_user: models.User = Depends(get_current_user)):
+def get_current_active_user(current_user: User = Depends(get_current_user)):
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-def get_current_active_admin(current_user: models.User = Depends(get_current_user)):
+def get_current_active_admin(current_user: User = Depends(get_current_user)):
     if not current_user.is_admin:
         raise HTTPException(status_code=403, detail="Requires admin privileges")
     return current_user
