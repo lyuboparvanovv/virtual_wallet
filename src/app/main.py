@@ -1,12 +1,22 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.api_v1.api import api_router
+from app.db.session import Base, engine
 
-app = FastAPI(title="Virtual Wallet")
+Base.metadata.create_all(bind=engine)
 
-app.include_router(api_router, prefix="/test")
+app = FastAPI(title="Virtual Wallet API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 @app.get("/")
-def read_root():
-    return {"msg": "Virtual Wallet API"}
-
+async def root():
+    return {"message": "Welcome to Virtual Wallet API"}
