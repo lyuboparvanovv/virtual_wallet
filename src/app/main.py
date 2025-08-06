@@ -24,4 +24,4 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Virtual Wallet API"}
+    return {"message": "Welcome to Virtual Wallet API!"}
