@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
-import app.models
+
 from app.services.get_settings import get_settings
 
 settings = get_settings()
@@ -11,7 +11,10 @@ engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 Base = declarative_base()
+
+Base.metadata.create_all(bind=engine)
 
 DB_CONFIG = {
     "dbname": settings.DB_NAME,
