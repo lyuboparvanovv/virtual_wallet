@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.endpoints import auth, users, cards, transactions, categories, contacts
-from app.db.session import Base, engine
+from app.db.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,6 +24,7 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(cards.router, prefix="/cards", tags=["cards"])
 app.include_router(categories.router, prefix="/categories", tags=["categories"])
 app.include_router(contacts.router, prefix="/contacts", tags=["contacts"])
+
 
 
 @app.get("/")

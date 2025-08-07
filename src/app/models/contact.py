@@ -1,4 +1,4 @@
-from app.db.session import Base
+from app.db.database import Base
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 

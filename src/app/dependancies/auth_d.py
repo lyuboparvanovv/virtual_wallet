@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app import models
 from app.crud.user import *
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
 from app.services import auth
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")

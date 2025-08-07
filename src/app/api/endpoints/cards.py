@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.crud.card import create_card, get_card_by_number, get_cards_by_user, delete_card
-from app.db.session import get_db
+from app.db.database import get_db
 from app.dependancies.auth_d import get_current_user
 from app.models import User
 from app.schemas.card import CardOut, CardCreate

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.crud.user import update_user, get_user
-from app.db.session import get_db
+from app.db.database import get_db
 from app.dependancies.auth_d import get_current_user, get_current_active_admin
 from app.models import User
 from app.schemas.user import UserOut, UserUpdate

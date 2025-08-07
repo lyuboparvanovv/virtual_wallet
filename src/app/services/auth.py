@@ -10,7 +10,7 @@ from app.crud.user import get_user_by_username
 from app.models.user import User
 
 load_dotenv()
-from app.db.session import get_db
+from app.db.database import get_db
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change_this_secret_in_prod")
 ALGORITHM = "HS256"

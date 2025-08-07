@@ -1,10 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 
-from app.db.session import Base
+from app.db.database import Base
 
+
+def utc_now():
+    return datetime.now(timezone.utc)
 
 class User(Base):
     __tablename__ = "users"
@@ -18,8 +21,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     is_approved = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.now())
-
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     cards = relationship("Card", back_populates="user", cascade="all, delete-orphan")
     transactions_sent = relationship("Transaction", foreign_keys='Transaction.sender_id', back_populates="sender")
     transactions_received = relationship("Transaction", foreign_keys='Transaction.receiver_id',

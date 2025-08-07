@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.db.session import get_db
+from app.db.database import get_db
 from app.dependancies.auth_d import get_current_user
 from app.models import Category, User
 from app.schemas.category import CategoryOut, CategoryCreate
@@ -21,3 +21,13 @@ def create_category(category: CategoryCreate, db: Session = Depends(get_db), cur
 def get_categories(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     categories = db.query(Category).filter(Category.user_id == current_user.id).all()
     return categories
+
+@router.put("/{category_id}", response_model=CategoryOut)
+def update_category(category_id: int, category_update: CategoryCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    category = db.query(Category).filter(Category.id == category_id, Category.user_id == current_user.id).first()
+    if not category:
+        raise HTTPException(404, "Category not found")
+    category.name = category_update.name
+    db.commit()
+    db.refresh(category)
+    return category
