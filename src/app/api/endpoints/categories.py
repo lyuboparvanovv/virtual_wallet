@@ -17,3 +17,7 @@ def create_category(category: CategoryCreate, db: Session = Depends(get_db), cur
     db.refresh(db_category)
     return db_category
 
+@router.get("/", response_model=List[CategoryOut])
+def get_categories(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    categories = db.query(Category).filter(Category.user_id == current_user.id).all()
+    return categories
