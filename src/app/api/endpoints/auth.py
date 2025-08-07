@@ -9,6 +9,7 @@ from app.services.auth import create_access_token
 
 router = APIRouter()
 
+
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if get_user_by_username(db, user.username):
@@ -20,6 +21,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = create_user(db, user)
     return db_user
 
+
 @router.post("/token", response_model=Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = get_user_by_username(db, form_data.username)
@@ -29,6 +31,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User registration not approved by admin")
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/logout")
 def logout():
