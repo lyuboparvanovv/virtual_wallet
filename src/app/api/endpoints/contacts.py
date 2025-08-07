@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -25,3 +27,8 @@ def add_contact(contact: ContactCreate, db: Session = Depends(get_db), current_u
     db.commit()
     db.refresh(db_contact)
     return db_contact
+
+@router.get("/", response_model=List[ContactOut])
+def get_contacts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    contacts = db.query(Contact).filter(Contact.owner_id == current_user.id).all()
+    return contacts
