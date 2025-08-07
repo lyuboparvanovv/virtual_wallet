@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import auth
+from app.api.endpoints import auth, users, cards
 from app.db.session import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -20,6 +20,8 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(cards.router, prefix="/cards", tags=["cards"])
 
 
 @app.get("/")
