@@ -48,3 +48,12 @@ def deactivate_user(user_id: int, db: Session = Depends(get_db)):
     user.is_active = False
     db.commit()
     return {"msg": f"User {user.username} deactivated"}
+
+@router.post("/{user_id}/activate", dependencies=[Depends(get_current_active_admin)])
+def activate_user(user_id: int, db: Session = Depends(get_db)):
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(404, "User not found")
+    user.is_active = True
+    db.commit()
+    return {"msg": f"User {user.username} activated"}
