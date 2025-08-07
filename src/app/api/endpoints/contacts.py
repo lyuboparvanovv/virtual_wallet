@@ -11,6 +11,7 @@ from app.schemas.contact import ContactOut, ContactCreate
 
 router = APIRouter()
 
+
 @router.post("/", response_model=ContactOut, status_code=status.HTTP_201_CREATED)
 def add_contact(contact: ContactCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     contact_user = get_user(db, contact.contact_user_id)
@@ -28,7 +29,18 @@ def add_contact(contact: ContactCreate, db: Session = Depends(get_db), current_u
     db.refresh(db_contact)
     return db_contact
 
+
 @router.get("/", response_model=List[ContactOut])
 def get_contacts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     contacts = db.query(Contact).filter(Contact.owner_id == current_user.id).all()
     return contacts
+
+
+@router.delete("/{contact_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_contact(contact_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    contact = db.query(Contact).filter(Contact.id == contact_id, Contact.owner_id == current_user.id).first()
+    if not contact:
+        raise HTTPException(404, "Contact not found")
+    db.delete(contact)
+    db.commit()
+    return
