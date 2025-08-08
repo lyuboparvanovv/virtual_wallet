@@ -24,6 +24,9 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(cards.router, prefix="/cards", tags=["cards"])
 app.include_router(categories.router, prefix="/categories", tags=["categories"])
 app.include_router(contacts.router, prefix="/contacts", tags=["contacts"])
+app.include_router(transactions.router, prefix="/transactions", tags=["transactions"])
+
+
 
 
 
